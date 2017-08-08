@@ -1,0 +1,24 @@
+version: "3.3"
+
+services:
+  zeppelin:
+    container_name: zeppelin-container
+    image: apache/zeppelin:0.7.2
+    ports: 
+      - 8080:8080
+    volumes:
+      - ./logs:/logs
+      - ./notebook:/notebook
+      - ./raw-data:/raw-data
+    environment:
+      ZEPPELIN_LOG_DIR: "/logs"
+      ZEPPELIN_NOTEBOOK_DIR: "/notebook"
+
+      # Memory Configurations
+      ZEPPELIN_JAVA_OPTS: "-Dspark.executor.memory=6g"
+      ZEPPELIN_INT_MEM: "-Xmx6g -XX:-UseGCOverheadLimit -XX:MaxPermSize=4g"
+      # ZEPPELIN_MEM: "-Xmx6g -XX:-UseGCOverheadLimit"
+      SPARK_SUBMIT_OPTIONS: "--driver-java-options -Xmx6g -XX:-UseGCOverheadLimit"      
+      ZEPPELIN_SPARK_DRIVER_MEMORY: "6g"
+      ZEPPELIN_MEM: "-Xms6g -Xmx6g -XX:MaxPermSize=6g"
+      ZEPPELIN_INTP_MEM: "-Xmx6g -XX:-UseGCOverheadLimit -XX:MaxPermSize=4g"
