@@ -1,0 +1,14 @@
+//////////////// SACADO ////////////////
+val saquesFile = sc.textFile("/raw-data/arquivo-2016.csv")
+
+case class Saque(uf:String, municipio:String, nis:String, nome:String, mesReferencia:Integer, parcela:Integer, valorParcela:Float, mesCompetencia:Integer, dataSaque:String)
+
+// UF / Código SIAFI Município / Nome Município / Código Função / Código Subfunção / Código Programa Código Ação / NIS Favorecido / Nome Favorecido / Fonte-Finalidade / Mês Referência / Parcela / Valor Parcela / Mês Competência / Data do Saque
+val finalData = saquesFile
+.map(s => s.split("\t"))
+.filter(s => s(0) != "UF")
+.map(s => Saque(s(0).toString, s(2).toString, s(6).toString, s(7).toString, s(9).toInt, s(10).toInt, s(11).replaceAll(",", "").toFloat, s(12).toInt, s(13).toString))
+
+val data = finalData.toDF()
+
+data.registerTempTable("Saque")

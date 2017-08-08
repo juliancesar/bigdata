@@ -1,0 +1,113 @@
+version: '2'
+
+services:
+  
+  # Elastic Search Machine
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+    container_name: elasticsearch1
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # Disable Security!
+      - xpack.security.enabled=false
+      - http.cors.enabled=true      
+      - http.cors.allow-origin=*
+      - http.cors.allow-headers=Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With
+      - http.cors.allow-credentials=true      
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+      # - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+    networks:
+      - bestnet
+
+  # Elastic Search Machine
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+    container_name: elasticsearch2
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+      # Other instance
+      - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+
+      # Disable Security!
+      - xpack.security.enabled=false
+      - http.cors.enabled=true      
+      - http.cors.allow-origin=*
+      - http.cors.allow-headers=Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With
+      - http.cors.allow-credentials=true      
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    volumes:
+      - esdata2:/usr/share/elasticsearch/data
+      # - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - bestnet
+  # Kibana Machine
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:5.5.1
+    ports:
+      - 5601:5601
+    environment:
+        SERVER_NAME: localhost
+        ELASTICSEARCH_URL: http://elasticsearch1:9200
+    links:
+    - elasticsearch1
+    - elasticsearch2
+    networks:
+      - bestnet
+
+  # Zeppelin Machine (Hadoop + Spark + Zeppelin)
+  zeppelin:
+    container_name: zeppelin
+    image: apache/zeppelin:0.7.2
+    mem_limit: 2g
+    ports: 
+      - 8080:8080
+    volumes:
+      - zeppelindata:/logs
+      - zeppelindata:/notebook
+      - ./zeppelin/raw-data/:/raw-data
+    links:
+    - elasticsearch1
+    - elasticsearch2
+    environment:
+      ZEPPELIN_LOG_DIR: "/logs"
+      ZEPPELIN_NOTEBOOK_DIR: "/notebook"
+
+      # Memory Configurations
+      ZEPPELIN_JAVA_OPTS: "-Dspark.executor.memory=2g"
+      ZEPPELIN_INT_MEM: "-Xmx2g -XX:-UseGCOverheadLimit -XX:MaxPermSize=2g"
+      SPARK_SUBMIT_OPTIONS: "--driver-java-options -Xmx2g -XX:-UseGCOverheadLimit"      
+      ZEPPELIN_SPARK_DRIVER_MEMORY: "2g"
+      ZEPPELIN_MEM: "-Xms2g -Xmx2g -XX:MaxPermSize=2g"
+      ZEPPELIN_INTP_MEM: "-Xmx2g -XX:-UseGCOverheadLimit -XX:MaxPermSize=2g"
+    networks:
+      - bestnet
+
+volumes:
+  esdata1:
+    driver: local
+  esdata2:
+    driver: local
+  zeppelindata:
+    driver: local
+
+networks:
+  bestnet:
+  

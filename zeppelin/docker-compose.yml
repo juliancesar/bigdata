@@ -4,7 +4,7 @@ services:
   zeppelin:
     container_name: zeppelin-container
     image: apache/zeppelin:0.7.2
-    mem_limit: 4g
+    mem_limit: 2g
     ports: 
       - 8080:8080
     volumes:
@@ -16,10 +16,10 @@ services:
       ZEPPELIN_NOTEBOOK_DIR: "/notebook"
 
       # Memory Configurations
-      ZEPPELIN_JAVA_OPTS: "-Dspark.executor.memory=4g"
-      ZEPPELIN_INT_MEM: "-Xmx4g -XX:-UseGCOverheadLimit -XX:MaxPermSize=4g"
-      # ZEPPELIN_MEM: "-Xmx4g -XX:-UseGCOverheadLimit"
-      SPARK_SUBMIT_OPTIONS: "--driver-java-options -Xmx4g -XX:-UseGCOverheadLimit"      
-      ZEPPELIN_SPARK_DRIVER_MEMORY: "4g"
-      ZEPPELIN_MEM: "-Xms4g -Xmx4g -XX:MaxPermSize=4g"
-      ZEPPELIN_INTP_MEM: "-Xmx4g -XX:-UseGCOverheadLimit -XX:MaxPermSize=4g"
+      ZEPPELIN_JAVA_OPTS: "-Dspark.executor.memory=2g"
+      ZEPPELIN_INT_MEM: "-Xmx2g -XX:-UseGCOverheadLimit -XX:MaxPermSize=2g"
+      # ZEPPELIN_MEM: "-Xmx2g -XX:-UseGCOverheadLimit"
+      SPARK_SUBMIT_OPTIONS: "--driver-java-options -Xmx2g -XX:-UseGCOverheadLimit"      
+      ZEPPELIN_SPARK_DRIVER_MEMORY: "2g"
+      ZEPPELIN_MEM: "-Xms2g -Xmx2g -XX:MaxPermSize=2g"
+      ZEPPELIN_INTP_MEM: "-Xmx2g -XX:-UseGCOverheadLimit -XX:MaxPermSize=2g"
