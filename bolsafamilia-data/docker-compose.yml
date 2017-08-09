@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  db:
+    container_name: bolsafamilia-db-container
+    image: mysql:5.7
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ../best/zeppelin/raw-data:/var/lib/mysql-files/
+
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: bolsafamilia
+      MYSQL_PASSWORD: bolsafamilia
+      MYSQL_DATABASE: bolsafamilia

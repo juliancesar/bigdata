@@ -1,0 +1,6 @@
+/bolsafamilia-data/mysql-data/*
+/metabase/mysql-data/*
+/superset/mysql-data/*
+/best/zeppelin/raw-data/*
+/zeppelin/raw-data/*
+/zeppelin/notebook/*
