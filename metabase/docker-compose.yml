@@ -8,11 +8,16 @@ services:
       - 3000:3000
     links:
       - db
+    environment:
+      - "MB_DB_FILE=/metabase-data/metabase.db"
+    volumes:
+      - ./metabase-data:/metabase-data/
   db:
     container_name: metabase-db-container
     image: mysql:5.7
     volumes:
-        - ./mysql-data:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql
+      - /home/00968514901/Dev/BigData/datasets/:/var/lib/mysql-files/
     ports:
       - 3306:3306
     environment:
